@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Event</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="event__app">
+      <div class="event__add-btn-row">
+        <button class="event__add-btn">Add New Event</button>
+      </div>
+      <table class="event__list">
+        <tr>
+          <th>Event Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Actions</th>
+        </tr>
+      </table>
+
+      <form class="event__form" action="add">
+        <input type="text" class="event__name-input" />
+        <input type="date" class="event__start-date-input" />
+        <input type="date" class="event__end-date-input" />
+        <button class="event__submit-btn">save</button>
+      </form>
+    </div>
+    <script type="text/javascript" src="index.js"></script>
+  </body>
+</html>
