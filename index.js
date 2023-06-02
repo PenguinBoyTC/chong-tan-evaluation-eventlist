@@ -244,12 +244,14 @@ class TodoController {
     console.log('handleDeleteEvent');
 
     this.view.eventlist.addEventListener('click', (e) => {
-      this.view.hideForm();
       const isDeleteBtn = e.target.classList.contains('event__delete-btn');
       if (isDeleteBtn) {
         const removeId = e.target.getAttribute('remove-id');
         this.model.removeEvent(removeId).then((id) => {
           this.view.removeEvent(removeId);
+          this.view.hideForm();
+          this.view.showEvent(this.preEditId);
+          this.preEditId = null;
         });
       }
     });
