@@ -119,16 +119,16 @@ class EventView {
     this.form.style.display = 'block';
   }
   createEventItem(event) {
-    const eventItem = document.createElement('tr');
+    const eventItem = document.createElement('div');
     eventItem.classList.add('event');
     eventItem.setAttribute('id', `event-${event.id}`);
-    const title = document.createElement('td');
+    const title = document.createElement('div');
     title.classList.add('event__name');
     title.textContent = event.eventName;
-    const startDate = document.createElement('td');
+    const startDate = document.createElement('div');
     startDate.classList.add('event__start-date');
     startDate.textContent = event.startDate;
-    const endDate = document.createElement('td');
+    const endDate = document.createElement('div');
     endDate.classList.add('event__end-date');
     endDate.textContent = event.endDate;
     const editBtn = document.createElement('button');
