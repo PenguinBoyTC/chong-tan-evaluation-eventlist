@@ -12,21 +12,24 @@
       <div class="event__add-btn-row">
         <button class="event__add-btn">Add New Event</button>
       </div>
-      <div class="event__list">
-        <!-- <div class="event">
-          <div class="event__name">Music</div>
-          <div class="event__start-date">2023-01-20</div>
-          <div class="event__end">2023-01-21</div>
-          <button class="event__edit-btn">edit</button>
-          <button class="event__delete-btn">delete</button>
-        </div> -->
+      <div class="event__container">
+        <div class="event__header">
+          <div class="event__header-item">Event</div>
+          <div class="event__header-item">Start</div>
+          <div class="event__header-item">End</div>
+          <div class="event__header-item">Action</div>
+        </div>
+        <div class="event__list"></div>
+        <form class="event__form" action="add">
+          <input type="text" class="event__name-input" />
+          <input type="date" class="event__start-date-input" />
+          <input type="date" class="event__end-date-input" />
+          <div>
+            <button class="event__submit-btn" type="submit">Save</button>
+            <button class="event__cancel-btn" type="button">Cancel</button>
+          </div>
+        </form>
       </div>
-      <form class="event__form" action="add">
-        <input type="text" class="event__name-input" />
-        <input type="date" class="event__start-date-input" />
-        <input type="date" class="event__end-date-input" />
-        <button class="event__submit-btn">save</button>
-      </form>
     </div>
     <script type="text/javascript" src="index.js"></script>
   </body>

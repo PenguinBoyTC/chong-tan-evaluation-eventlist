@@ -86,15 +86,11 @@ class EventView {
     this.eventNameInput = document.querySelector('.event__name-input');
     this.startDateInput = document.querySelector('.event__start-date-input');
     this.endDateInput = document.querySelector('.event__end-date-input');
-    this.eventapp = document.querySelector('.event__app');
+    this.eventContainer = document.querySelector('.event__container');
+    this.cancelBtn = document.querySelector('.event__cancel-btn');
   }
   initRenderEvents(events) {
-    this.eventlist.innerHTML = `<tr>
-          <th>Event Name</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th>Actions</th>
-        </tr>`;
+    this.eventlist.innerHTML = '';
     events.forEach((event) => {
       this.appendEvent(event);
     });
@@ -112,15 +108,18 @@ class EventView {
 
   hideForm() {
     console.log('hideForm');
-    this.form.style.display = 'none';
+    this.form.classList.remove('show');
+    this.form.classList.add('hide');
   }
   displayForm() {
     console.log('displayForm');
-    this.form.style.display = 'block';
+    this.form.classList.remove('hide');
+    this.form.classList.add('show');
   }
   createEventItem(event) {
     const eventItem = document.createElement('div');
     eventItem.classList.add('event');
+    eventItem.classList.add('show');
     eventItem.setAttribute('id', `event-${event.id}`);
     const title = document.createElement('div');
     title.classList.add('event__name');
@@ -131,6 +130,8 @@ class EventView {
     const endDate = document.createElement('div');
     endDate.classList.add('event__end-date');
     endDate.textContent = event.endDate;
+    const buttons = document.createElement('div');
+    buttons.classList.add('event__buttons');
     const editBtn = document.createElement('button');
     editBtn.classList.add('event__edit-btn');
     editBtn.setAttribute('edit-id', event.id);
@@ -142,8 +143,9 @@ class EventView {
     eventItem.appendChild(title);
     eventItem.appendChild(startDate);
     eventItem.appendChild(endDate);
-    eventItem.appendChild(editBtn);
-    eventItem.appendChild(deleteBtn);
+    buttons.appendChild(editBtn);
+    buttons.appendChild(deleteBtn);
+    eventItem.appendChild(buttons);
     return eventItem;
   }
   removeEvent(id) {
@@ -153,7 +155,8 @@ class EventView {
 
   editEvent(id, event) {
     const eventItem = document.getElementById(`event-${id}`);
-    eventItem.style.display = 'none';
+    eventItem.classList.remove('show');
+    eventItem.classList.add('hide');
     this.eventNameInput.value = event.eventName;
     this.startDateInput.value = event.startDate;
     this.endDateInput.value = event.endDate;
@@ -166,17 +169,19 @@ class EventView {
     if (action === 'edit') {
       this.form.setAttribute('edit-id', editId);
     } else {
+      console.log('action: add');
       this.form.removeAttribute('edit-id');
       this.eventNameInput.value = '';
       this.startDateInput.value = '';
       this.endDateInput.value = '';
-      this.eventapp.appendChild(this.form);
+      this.eventContainer.appendChild(this.form);
     }
   }
 
   showEvent(id) {
     const eventItem = document.getElementById(`event-${id}`);
-    eventItem.style.display = 'block';
+    eventItem.classList.remove('hide');
+    eventItem.classList.add('show');
   }
 }
 
@@ -201,11 +206,12 @@ class TodoController {
     this.handleAddEditformEvent();
     this.handleDeleteEvent();
     this.handleEditEvent();
+    this.cancelBtnEventListeners();
   }
 
   addBtnEventListeners() {
-    console.log('addBtnEventListeners');
     this.view.addBtn.addEventListener('click', () => {
+      console.log('addBtnEventListeners');
       this.view.setFormAction('add');
       this.view.displayForm();
       if (this.preEditId) {
@@ -215,14 +221,32 @@ class TodoController {
     });
   }
 
+  cancelBtnEventListeners() {
+    this.view.cancelBtn.addEventListener('click', () => {
+      console.log('cancelBtnEventListeners');
+      this.view.hideForm();
+      if (this.preEditId) {
+        this.view.showEvent(this.preEditId);
+        this.preEditId = null;
+      }
+    });
+  }
+
   async handleAddEditformEvent() {
-    console.log('handleAddEditformEvent');
     this.view.form.addEventListener('submit', async (e) => {
+      console.log('handleAddEditformEvent');
       e.preventDefault();
       const eventName = this.view.eventNameInput.value;
       const startDate = this.view.startDateInput.value;
       const endDate = this.view.endDateInput.value;
-      console.log(eventName, startDate, endDate);
+      if (!eventName || !startDate || !endDate) {
+        alert('Please fill in all fields');
+        return;
+      }
+      if (new Date(startDate) > new Date(endDate)) {
+        alert('Start date must be before end date');
+        return;
+      }
       const formAction = this.view.form.getAttribute('action');
       if (formAction === 'edit') {
         const editId = this.view.form.getAttribute('edit-id');
@@ -241,17 +265,18 @@ class TodoController {
     });
   }
   async handleDeleteEvent() {
-    console.log('handleDeleteEvent');
-
     this.view.eventlist.addEventListener('click', (e) => {
+      console.log('handleDeleteEvent');
       const isDeleteBtn = e.target.classList.contains('event__delete-btn');
       if (isDeleteBtn) {
         const removeId = e.target.getAttribute('remove-id');
         this.model.removeEvent(removeId).then((id) => {
           this.view.removeEvent(removeId);
           this.view.hideForm();
-          this.view.showEvent(this.preEditId);
-          this.preEditId = null;
+          if (this.preEditId) {
+            this.view.showEvent(this.preEditId);
+            this.preEditId = null;
+          }
         });
       }
     });
